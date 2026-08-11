@@ -3,6 +3,8 @@ use axum::{extract::State, http::StatusCode, Json};
 use serde_json::{json, Value};
 
 pub async fn get_articles(State(state): State<AppState>) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering get_articles()");
+	log::error!("Exception in get_articles(): (unprintable)");
     //
     match state.articles_mgr.get_articles().await {
         Ok(articles) => (

@@ -24,6 +24,7 @@ pub async fn update_article(
     Path(slug): Path<String>,
     Json(input): Json<UpdateArticleInputDTO>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering update_article()");
     //
     match state
         .articles_mgr

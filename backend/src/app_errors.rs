@@ -44,9 +44,14 @@ pub enum AppError {
 impl From<(sqlx::Error, AppUseCase)> for AppError {
     //
     fn from(ctx: (sqlx::Error, AppUseCase)) -> Self {
+		log::debug!(">>> Entering from(ctx=(unprintable))");
         log::debug!("from((sqlx::Error, AppUseCase)): ctx={:?}", ctx);
         let err = ctx.0;
         // Start with the use case as the context, and then cover the possible errors within.
+		log::debug!("from(ctx=(unprintable)): None → (unprintable)");
+        log::debug!("from(ctx=(unprintable)): None → (unprintable)");
+        log::debug!("from(ctx=(unprintable)): None → (unprintable)");
+        log::debug!("from(ctx=(unprintable)): None → (unprintable)");
         match ctx.1 {
             AppUseCase::UserRegistration => match &err.into_database_error() {
                 Some(e) => match e.code() {
@@ -83,6 +88,9 @@ impl From<(sqlx::Error, AppUseCase)> for AppError {
             // Anything else is treated as an internal error.
             _ => AppError::InternalErr,
         }
+		log::debug!(">>> Entering from(err=(unprintable))");
+		log::debug!("<<< Exiting from(ctx=(unprintable))");
+		log::debug!("<<< Exiting from(err=(unprintable))");
     }
 }
 

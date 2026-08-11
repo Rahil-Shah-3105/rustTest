@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
 pub fn NotFoundPage(cx: Scope) -> Element {
+	log::debug!(">>> Entering NotFoundPage(cx=(unprintable))");
     //
     cx.render(rsx! {
         div {

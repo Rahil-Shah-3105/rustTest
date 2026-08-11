@@ -9,16 +9,22 @@ pub struct AuthMgr {
 impl AuthMgr {
     //
     pub fn new(user_repo: Arc<UsersRepo>) -> Self {
+		log::debug!(">>> Entering new(user_repo=(unprintable))");
         Self { user_repo }
     }
 
     pub async fn register_user(&self, user: &User, pwd: String) -> Result<i64, AppError> {
+		log::debug!(">>> Entering register_user(user=(unprintable),pwd={})", pwd);
+		let __log_start = std::time::Instant::now();
         //
         let (pwd, salt) = Self::generate_password(pwd);
+		log::info!("register_user(user,pwd)=(unprintable),{}: save query executed in {} ms", pwd, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting register_user(user=(unprintable),pwd={})", pwd);
         self.user_repo.save(user, pwd, salt).await
     }
 
     pub async fn login_user(&self, email: String, pwd: String) -> Result<User, AppError> {
+		log::debug!(">>> Entering login_user(email={},pwd={})", email, pwd);
         //
         let user_entry = self
             .user_repo
@@ -31,6 +37,7 @@ impl AuthMgr {
     }
 
     fn generate_password(pwd: String) -> (String, String) {
+		log::debug!(">>> Entering generate_password(pwd={})", pwd);
         //
         let salt: String = std::iter::repeat_with(fastrand::alphanumeric)
             .take(12)
@@ -40,6 +47,7 @@ impl AuthMgr {
     }
 
     fn check_password(input_pwd: &str, pwd: &str, salt: &str) -> bool {
+		log::debug!(">>> Entering check_password(input_pwd={},pwd={},salt={})", input_pwd, pwd, salt);
         //
         let digest = md5::compute(format!("@{salt}${input_pwd}").as_bytes());
         pwd == format!("{:x}", digest)

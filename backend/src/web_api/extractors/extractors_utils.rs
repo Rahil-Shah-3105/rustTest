@@ -9,6 +9,7 @@ pub async fn validate_token_extract_claims<S: Send + Sync>(
     parts: &mut Parts,
     state: &S,
 ) -> Result<Claims, AppError> {
+	log::debug!(">>> Entering validate_token_extract_claims()");
     //
     let token = TypedHeader::<Authorization<Token>>::from_request_parts(parts, state)
         .await
@@ -17,6 +18,7 @@ pub async fn validate_token_extract_claims<S: Send + Sync>(
             AppError::Unauthorized(err.to_string())
         })?;
 
+	log::debug!("<<< Exiting validate_token_extract_claims()");
     match verify_jwt(token.0 .0.token()) {
         Ok(claims) => Ok(claims),
         Err(err) => {

@@ -28,6 +28,8 @@ pub async fn update_current_user(
     user_id: UserId,
     InputJson(input): InputJson<UpdateUserInputDTO>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering update_current_user()");
+	log::error!("Exception in update_current_user(): (unprintable)");
     //
     match state
         .user_repo

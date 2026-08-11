@@ -11,6 +11,8 @@ pub async fn get_current_user(
     State(state): State<AppState>,
     curr_user_id: UserId,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering get_current_user()");
+	log::error!("Exception in get_current_user(): (unprintable)");
     //
     match state
         .user_repo

@@ -14,12 +14,17 @@ pub struct ArticlesRepo {
 impl ArticlesRepo {
     //
     pub fn new(dbcp: Arc<DbConnPool>) -> Self {
+		log::debug!(">>> Entering new(dbcp=(unprintable))");
         Self { dbcp }
     }
 
     pub async fn get_articles(&self) -> Result<Vec<Article>, AppError> {
+		log::debug!(">>> Entering get_articles()");
+		let __log_start = std::time::Instant::now();
         //
         let conn = self.dbcp.as_ref();
+		log::debug!("get_articles(): conn → (unprintable)");
+        log::info!("get_articles(): database query executed in {} ms", __log_start.elapsed().as_millis());
         let mut res = sqlx::query(
             "SELECT count(fa.user_id) AS favorites_count,
                     a.id, a.slug, a.title, a.description, a.body, a.created_at, a.updated_at,
@@ -32,6 +37,7 @@ impl ArticlesRepo {
         )
         .map(|r: PgRow| {
             let following = r.get::<i64, _>("following") > 0;
+			log::debug!("get_articles(): following → (unprintable)");
             let author: UserProfile = UserProfile {
                 user_id: r.get("user_id"),
                 username: r.get("username"),
@@ -60,6 +66,7 @@ impl ArticlesRepo {
             }
         }
 
+		log::debug!("<<< Exiting get_articles()");
         res
     }
 
@@ -103,24 +110,34 @@ impl ArticlesRepo {
             return Ok(Some(a.clone()));
         }
 
+		log::debug!("get_article(slug={}): following → (unprintable)", slug);
+        log::debug!("<<< Exiting get_article(slug={})", slug);
         Ok(article)
     }
 
     async fn get_tags(&self, conn: &Pool<Postgres>, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering get_tags(conn=(unprintable),a=(unprintable))");
+		let __log_start = std::time::Instant::now();
         //
         sqlx::query("SELECT tag FROM tags_articles WHERE article_id = $1")
             .bind(a.id)
             .map(|r: PgRow| a.tag_list.push(r.get("tag")))
             .fetch_all(conn)
             .await?;
+			log::info!("get_tags(conn,a)=(unprintable),(unprintable): find query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting get_tags(conn=(unprintable),a=(unprintable))");
         Ok(())
     }
 
     /// Add an `Article` into the store. It updates its `id`, `created_at` and `updated_at` attributes.
     pub async fn add(&self, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering add(a=(unprintable))");
+		let __log_start = std::time::Instant::now();
         //
         let mut txn = self.dbcp.begin().await?;
 
+		log::info!("add(a)=(unprintable): database query executed in {} ms", __log_start.elapsed().as_millis());
+        log::info!("add(a)=(unprintable): save query executed in {} ms", __log_start.elapsed().as_millis());
         match sqlx::query(
             "INSERT INTO articles (slug, title, description, body, author_id) 
             VALUES ($1, $2, $3, $4, $5) RETURNING id, created_at",
@@ -155,24 +172,35 @@ impl ArticlesRepo {
         {
             if let Err(err) = &mut txn.rollback().await {
                 log::error!("Txn rollback after set_tags(_) failed: {}", err);
+				log::debug!(">>> Entering set_tags()");
+let __log_start = std::time::Instant::now();
+				log::info!("set_tags(): delete query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting set_tags()");
                 return Err(AppError::InternalErr);
             }
         } else {
             txn.commit().await?;
         }
+		log::debug!("add(a=(unprintable)): a.updated_at → (unprintable)");
+        log::debug!("<<< Exiting add(a=(unprintable))");
         Ok(())
     }
 
     pub async fn delete(&self, slug: String) -> Result<(), AppError> {
+		let __log_start = std::time::Instant::now();
         //
         sqlx::query("DELETE FROM articles WHERE slug=$1")
             .bind(slug)
             .execute(self.dbcp.as_ref())
             .await?;
+			log::info!("delete(slug)={}: delete query executed in {} ms", slug, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting delete(slug={})", slug);
         Ok(())
     }
 
     pub async fn update(&self, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering update(a=(unprintable))");
+		let __log_start = std::time::Instant::now();
         //
         let mut txn = self.dbcp.begin().await?;
         if let Err(err) = sqlx::query(
@@ -208,6 +236,10 @@ impl ArticlesRepo {
         } else {
             txn.commit().await?;
         }
+		log::error!("Exception in update(a=(unprintable)): (unprintable)");
+        log::info!("update(a)=(unprintable): database query executed in {} ms", __log_start.elapsed().as_millis());
+        log::info!("update(a)=(unprintable): update query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting update(a=(unprintable))");
         Ok(())
     }
 
@@ -241,6 +273,8 @@ impl ArticlesRepo {
                 return Err(err);
             }
         }
+		log::info!("set_tags(): delete query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting set_tags()");
         Ok(())
     }
 

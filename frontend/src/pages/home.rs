@@ -2,6 +2,7 @@ use dioxus::prelude::*;
 use dioxus_router::Link;
 
 pub fn HomePage(cx: Scope) -> Element {
+	log::debug!(">>> Entering HomePage(cx=(unprintable))");
     cx.render(rsx! {
         div {
             class: "home-page",
