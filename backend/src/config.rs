@@ -20,6 +20,7 @@ impl DatabaseSettings {
     //
     /// Get the string used for connecting to the database.
     pub fn connection_string(&self) -> Secret<String> {
+		log::debug!(">>> Entering connection_string()");
         Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
             self.username,
@@ -32,6 +33,7 @@ impl DatabaseSettings {
 
     /// Such string allows connecting to the Postgres instance, without specifying a database.
     pub fn connection_string_without_db(&self) -> Secret<String> {
+		log::debug!(">>> Entering connection_string_without_db()");
         Secret::new(format!(
             "postgres://{}:{}@{}:{}",
             self.username,
@@ -56,6 +58,7 @@ pub enum Environment {
 
 impl Environment {
     pub fn as_str(&self) -> &'static str {
+		log::debug!(">>> Entering as_str()");
         match self {
             Environment::Local => "local",
             Environment::Production => "production",
@@ -79,9 +82,12 @@ impl TryFrom<String> for Environment {
 
 /// Get the application config.
 pub fn get_config() -> Result<AppConfig, config::ConfigError> {
+	log::debug!(">>> Entering get_config()");
     //
     let base_dir = std::env::current_dir().expect("Failed to determine the current directory");
     let config_dir = base_dir.join("config");
+	log::debug!("get_config(): base_dir → (unprintable)");
+	log::debug!("get_config(): config_dir → (unprintable)");
 
     // In the `./config` directory we have 3 yaml files: base, local, and production.
     let base_src =
@@ -95,6 +101,7 @@ pub fn get_config() -> Result<AppConfig, config::ConfigError> {
     let env_src =
         config::File::with_name(config_dir.join(env.as_str()).to_str().unwrap()).required(true);
 
+	log::debug!("<<< Exiting get_config()");
     config::Config::builder()
         // Load the config.(yml|yaml|toml|...) file.
         .add_source(base_src)

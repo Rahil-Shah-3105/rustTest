@@ -12,9 +12,13 @@ pub struct FormTextareaProps<'a> {
 }
 
 pub fn FormTextarea_Lg<'a>(cx: Scope<'a, FormTextareaProps<'a>>) -> Element {
+	log::debug!(">>> Entering FormTextarea_Lg(cx=(unprintable))");
     let rows = cx.props.rows.unwrap_or(1);
     let ph = cx.props.placeholder.clone().unwrap_or_default();
+	log::debug!("FormTextarea_Lg(cx=(unprintable)): rows → (unprintable)");
     cx.render(rsx! {
+		log::debug!("FormTextarea_Lg(cx=(unprintable)): ph → (unprintable)");
+        log::debug!("<<< Exiting FormTextarea_Lg(cx=(unprintable))");
         fieldset {
             class: "form-group",
             textarea {

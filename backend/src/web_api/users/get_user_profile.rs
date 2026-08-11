@@ -17,11 +17,14 @@ pub async fn get_user_profile(
     curr_user_id: UserId,
     Path(username): Path<String>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering get_user_profile()");
     //
     let profile = state
         .user_repo
         .get_profile_by_username(&curr_user_id, &username, AppUseCase::GetUserProfile)
         .await;
+		log::error!("Exception in get_user_profile(): (unprintable)");
+    log::debug!("<<< Exiting get_user_profile()");
     match profile {
         Ok(profile) => (StatusCode::OK, Json(json!({ "profile": profile }))),
         Err(err) => match err {
