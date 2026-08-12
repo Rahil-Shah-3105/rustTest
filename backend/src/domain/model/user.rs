@@ -6,13 +6,19 @@ pub struct UserId(i64);
 
 impl UserId {
     pub fn as_value(&self) -> i64 {
+		log::debug!(">>> Entering as_value()");
+        log::debug!("<<< Exiting as_value()");
         self.0
     }
 }
 
 impl From<i64> for UserId {
     fn from(id: i64) -> Self {
+		log::debug!(">>> Entering from(id={})", id);
+        log::debug!("<<< Exiting from(id={})", id);
         UserId(id)
+		log::debug!(">>> Entering from(val=(unprintable))");
+        log::debug!("<<< Exiting from(val=(unprintable))");
     }
 }
 
@@ -59,6 +65,8 @@ pub struct UserProfile {
 
 impl UserProfile {
     pub fn new_basic(user_id: i64) -> Self {
+		log::debug!(">>> Entering new_basic(user_id={})", user_id);
+        log::debug!("<<< Exiting new_basic(user_id={})", user_id);
         Self {
             user_id,
             username: "".into(),

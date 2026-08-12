@@ -16,6 +16,7 @@ pub struct Claims {
 
 impl Claims {
     pub fn new(id: i64, email: String, username: String) -> Self {
+		log::debug!(">>> Entering new(id={},email={},username={})", id, email, username);
         let iat = Utc::now();
         let exp = iat + Duration::minutes(5);
         Self {
@@ -30,7 +31,9 @@ impl Claims {
 
 /// Create a signed JWT token.
 pub fn create_jwt(id: i64, email: String, username: String) -> Result<String> {
+	log::debug!(">>> Entering create_jwt(id={},email={},username={})", id, email, username);
     //
+	log::debug!("<<< Exiting create_jwt(id={},email={},username={})", id, email, username);
     Ok(jsonwebtoken::encode(
         &Header::default(),
         &Claims::new(id, email, username),
@@ -70,16 +73,21 @@ impl Credentials for Token {
     const SCHEME: &'static str = "Token";
 
     fn decode(value: &axum::http::HeaderValue) -> Option<Self> {
+		log::debug!(">>> Entering decode(value=(unprintable))");
         debug_assert!(
             value.as_bytes().starts_with(b"Token "),
             "HeaderValue to decode should start with \"Token ..\", received = {:?}",
             value,
         );
         let token = &value.to_str().unwrap()["Token ".len()..];
+		log::warn!("decode(value=(unprintable)): token → (unprintable)");
+        log::debug!("<<< Exiting decode(value=(unprintable))");
         Some(Self(token.to_string()))
     }
 
     fn encode(&self) -> axum::http::HeaderValue {
+		log::debug!(">>> Entering encode()");
+        log::debug!("<<< Exiting encode()");
         HeaderValue::from_str(self.0.as_str()).unwrap()
     }
 }

@@ -24,7 +24,9 @@ pub async fn update_article(
     Path(slug): Path<String>,
     Json(input): Json<UpdateArticleInputDTO>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering update_article(curr_user_id=(unprintable))");
     //
+	log::debug!("<<< Exiting update_article(curr_user_id=(unprintable))");
     match state
         .articles_mgr
         .update_article(curr_user_id, slug, input.article)

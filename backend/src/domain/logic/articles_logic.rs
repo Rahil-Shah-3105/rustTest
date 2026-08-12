@@ -25,6 +25,8 @@ pub struct UpdateArticleInput {
 impl ArticlesMgr {
     //
     pub fn new(articles_repo: ArticlesRepo, user_repo: Arc<UsersRepo>) -> Self {
+		log::debug!(">>> Entering new(articles_repo=(unprintable),user_repo=(unprintable))");
+        log::debug!("<<< Exiting new(articles_repo=(unprintable),user_repo=(unprintable))");
         Self {
             articles_repo,
             user_repo,
@@ -32,6 +34,8 @@ impl ArticlesMgr {
     }
 
     pub async fn get_articles(&self) -> Result<Vec<Article>, AppError> {
+		log::debug!(">>> Entering get_articles()");
+        log::debug!("<<< Exiting get_articles()");
         self.articles_repo.get_articles().await
     }
 
@@ -47,6 +51,7 @@ impl ArticlesMgr {
         tag_list: Vec<String>,
         author_id: UserId,
     ) -> Result<Article, AppError> {
+		log::debug!(">>> Entering create_article(title={},description={},body={},tag_list={:?},author_id=(unprintable))", title, description, body, tag_list);
         //
         let slug = slugify(&title);
         let mut a = Article::new_basic(
@@ -62,6 +67,7 @@ impl ArticlesMgr {
             .user_repo
             .get_profile_by_id(author_id.as_value())
             .await?;
+			log::debug!("<<< Exiting create_article(title={},description={},body={},tag_list={:?},author_id=(unprintable))", title, description, body, tag_list);
         Ok(a)
     }
 

@@ -30,6 +30,7 @@ where
     type Rejection = (StatusCode, Json<Value>);
 
     async fn from_request(req: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+		log::debug!(">>> Entering from_request(req=(unprintable),state=(unprintable))");
         //
         let (mut parts, body) = req.into_parts();
 
@@ -78,6 +79,8 @@ fn find_serde_json_error_source<E>(err: &E) -> Option<String>
 where
     E: Error + 'static,
 {
+	log::debug!(">>> Entering find_serde_json_error_source(err=(unprintable))");
+    log::debug!("<<< Exiting find_serde_json_error_source(err=(unprintable))");
     find_error_source::<serde_json::Error>(err).map(|serde_json_err| serde_json_err.to_string())
 }
 
@@ -87,6 +90,8 @@ fn find_error_source<'a, T>(err: &'a (dyn Error + 'static)) -> Option<&'a T>
 where
     T: Error + 'static,
 {
+	log::debug!(">>> Entering find_error_source(err=(unprintable))");
+    log::debug!("<<< Exiting find_error_source(err=(unprintable))");
     if let Some(err) = err.downcast_ref::<T>() {
         Some(err)
     } else if let Some(source) = err.source() {

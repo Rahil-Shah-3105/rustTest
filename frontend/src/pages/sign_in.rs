@@ -15,9 +15,18 @@ use crate::{
 };
 
 pub fn SignInPage(cx: Scope) -> Element {
+	log::debug!(">>> Entering SignInPage(cx=(unprintable))");
     //
     let email = use_state(&cx, String::new);
     let password = use_state(&cx, String::new);
+	log::debug!("SignInPage(cx=(unprintable)): email → {}", email);
+	log::warn!("SignInPage(cx=(unprintable)): password → {}", password);
+	log::debug!("SignInPage(cx=(unprintable)): hide_invalid_creds → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): hide_internal_err → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): router → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): session_storage → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): token_state → (unprintable)");
+	log::warn!("SignInPage(cx=(unprintable)): token → (unprintable)");
     let hide_invalid_creds = use_state(&cx, String::new);
     let hide_internal_err = use_state(&cx, String::new);
     let router = use_router(&cx);
@@ -28,13 +37,22 @@ pub fn SignInPage(cx: Scope) -> Element {
         session_storage.insert(TOKEN, token);
         let app_state = use_shared_state::<AppState>(cx).unwrap();
         app_state.write().token = Some(token.clone());
+		log::debug!("SignInPage(cx=(unprintable)): app_state → (unprintable)");
         router.push_route("/", None, None);
     }
 
     // TODO: Temporary used during development.
     let temp_email = "joe@black.com".to_string();
     let temp_pass = "123".to_string();
+	log::debug!("SignInPage(cx=(unprintable)): temp_email → {}", temp_email);
 
+	log::debug!("SignInPage(cx=(unprintable)): temp_pass → {}", temp_pass);
+    log::debug!("SignInPage(cx=(unprintable)): email → {}", email);
+    log::warn!("SignInPage(cx=(unprintable)): password → {}", password);
+    log::debug!("SignInPage(cx=(unprintable)): hide_invalid_creds → (unprintable)");
+    log::debug!("SignInPage(cx=(unprintable)): hide_internal_err → (unprintable)");
+    log::debug!("SignInPage(cx=(unprintable)): token_state → (unprintable)");
+    log::debug!("<<< Exiting SignInPage(cx=(unprintable))");
     cx.render(rsx! {
         div {
             class: "auth-page",
@@ -102,6 +120,7 @@ pub fn SignInPage(cx: Scope) -> Element {
                                                         }
                                                     }
                                                 }
+												let __log_start = std::time::Instant::now();
                                             }
                                         }
                                     });
