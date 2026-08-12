@@ -9,6 +9,8 @@ pub struct AuthMgr {
 impl AuthMgr {
     //
     pub fn new(user_repo: Arc<UsersRepo>) -> Self {
+		log::debug!(">>> Entering new(user_repo=(unprintable))");
+        log::debug!("<<< Exiting new(user_repo=(unprintable))");
         Self { user_repo }
     }
 

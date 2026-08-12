@@ -26,7 +26,10 @@ pub async fn create_article(
     user_id: UserId,
     InputJson(input): InputJson<CreateArticleInput>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering create_article(user_id=(unprintable))");
     //
+	log::error!("Exception in create_article(user_id=(unprintable)): (unprintable)");
+    log::debug!("<<< Exiting create_article(user_id=(unprintable))");
     match state
         .articles_mgr
         .create_article(

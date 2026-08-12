@@ -2,6 +2,8 @@ use dioxus::prelude::*;
 use dioxus_router::Link;
 
 pub fn Footer(cx: Scope) -> Element {
+	log::debug!(">>> Entering Footer(cx=(unprintable))");
+    log::debug!("<<< Exiting Footer(cx=(unprintable))");
     cx.render(rsx! {
         footer {
             div {

@@ -12,9 +12,13 @@ pub struct FormInputProps<'a> {
 }
 
 pub fn FormInput_Lg<'a>(cx: Scope<'a, FormInputProps<'a>>) -> Element {
+	log::debug!(">>> Entering FormInput_Lg(cx=(unprintable))");
     let ph = cx.props.placeholder.clone().unwrap_or_default();
     let value = cx.props.value.clone().unwrap_or_default();
+	log::debug!("FormInput_Lg(cx=(unprintable)): ph → (unprintable)");
     cx.render(rsx! {
+		log::debug!("FormInput_Lg(cx=(unprintable)): value → (unprintable)");
+        log::debug!("<<< Exiting FormInput_Lg(cx=(unprintable))");
         fieldset {
             class: "form-group",
             input {

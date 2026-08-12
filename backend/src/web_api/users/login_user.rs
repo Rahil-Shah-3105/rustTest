@@ -25,7 +25,10 @@ pub async fn login_user(
     State(state): State<AppState>,
     InputJson(input): InputJson<LoginUserInput>,
 ) -> impl IntoResponse {
+	log::debug!(">>> Entering login_user()");
     //
+	log::error!("Exception in login_user(): (unprintable)");
+    log::debug!("<<< Exiting login_user()");
     match state
         .auth_mgr
         .login_user(input.user.email, input.user.password)
