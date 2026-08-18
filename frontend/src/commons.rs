@@ -7,6 +7,8 @@ pub struct AppState {
 
 impl AppState {
     pub fn new() -> Self {
+		log::debug!(">>> Entering new()");
+        log::debug!("<<< Exiting new()");
         Self { token: None }
     }
 }

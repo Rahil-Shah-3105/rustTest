@@ -30,6 +30,7 @@ where
     type Rejection = (StatusCode, Json<Value>);
 
     async fn from_request(req: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+		log::debug!(">>> Entering from_request(req=(unprintable),state=(unprintable))");
         //
         let (mut parts, body) = req.into_parts();
 
@@ -45,13 +46,17 @@ where
             .ok();
 
         let req = Request::from_parts(parts, body);
+		log::debug!("from_request(req=(unprintable),state=(unprintable)): req → (unprintable)");
 
         match Json::<T>::from_request(req, state).await {
             Ok(value) => Ok(Self(value.0)),
             // Convert the error from `axum::Json` into whatever we want.
             Err(rejection) => {
+				log::error!("Exception in from_request(req=(unprintable),state=(unprintable)): (unprintable)");
                 let message = rejection.to_string();
+				log::debug!("from_request(req=(unprintable),state=(unprintable)): message → {}", message);
                 let reason = find_serde_json_error_source(&rejection);
+				log::debug!("from_request(req=(unprintable),state=(unprintable)): reason → {:?}", reason);
 
                 let code = match rejection {
                     JsonRejection::JsonDataError(_) => StatusCode::UNPROCESSABLE_ENTITY,
@@ -67,6 +72,7 @@ where
                         "reason": reason,
                     })),
                 ))
+				log::debug!("<<< Exiting from_request(req=(unprintable),state=(unprintable))");
             }
         }
     }
@@ -78,6 +84,8 @@ fn find_serde_json_error_source<E>(err: &E) -> Option<String>
 where
     E: Error + 'static,
 {
+	log::debug!(">>> Entering find_serde_json_error_source(err=(unprintable))");
+    log::debug!("<<< Exiting find_serde_json_error_source(err=(unprintable))");
     find_error_source::<serde_json::Error>(err).map(|serde_json_err| serde_json_err.to_string())
 }
 
@@ -87,11 +95,13 @@ fn find_error_source<'a, T>(err: &'a (dyn Error + 'static)) -> Option<&'a T>
 where
     T: Error + 'static,
 {
+	log::debug!(">>> Entering find_error_source(err=(unprintable))");
     if let Some(err) = err.downcast_ref::<T>() {
         Some(err)
     } else if let Some(source) = err.source() {
         find_error_source(source)
     } else {
+		log::debug!("<<< Exiting find_error_source(err=(unprintable))");
         None
     }
 }

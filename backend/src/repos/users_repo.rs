@@ -13,10 +13,17 @@ pub struct UsersRepo {
 impl UsersRepo {
     //
     pub fn new(dbcp: Arc<DbConnPool>) -> Self {
+		log::debug!(">>> Entering new(dbcp=(unprintable))");
+        log::debug!("<<< Exiting new(dbcp=(unprintable))");
         Self { dbcp }
     }
 
     pub async fn save(&self, user: &User, pwd: String, salt: String) -> Result<i64, AppError> {
+		log::debug!(">>> Entering save(user=(unprintable),pwd=<redacted>,salt=<redacted>)");
+		let __log_start = std::time::Instant::now();
+        let __log_start = std::time::Instant::now();
+        log::info!("save(user,pwd,salt)=(unprintable),{},{}: database query executed in {} ms", pwd, salt, __log_start.elapsed().as_millis());
+        log::info!("save(user,pwd,salt)=(unprintable),{},{}: save query executed in {} ms", pwd, salt, __log_start.elapsed().as_millis());
         //
         match sqlx::query(
             "INSERT INTO accounts (email, username, password, salt) 
@@ -29,6 +36,8 @@ impl UsersRepo {
         .fetch_one(self.dbcp.as_ref())
         .await
         {
+			log::error!("Exception in save(user=(unprintable),pwd=<redacted>,salt=<redacted>): (unprintable)");
+            log::debug!("<<< Exiting save(user=(unprintable),pwd=<redacted>,salt=<redacted>)");
             Ok(row) => Ok(row.get("id")),
             Err(err) => Err(AppError::from((err, AppUseCase::UserRegistration))),
         }
@@ -47,10 +56,15 @@ impl UsersRepo {
         .bind(email)
         .fetch_one(self.dbcp.as_ref())
         .await
+		let __log_start = std::time::Instant::now();
+        log::info!("get_by_email(email,usecase)={},(unprintable): database query executed in {} ms", email, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting get_by_email(email={},usecase=(unprintable))", email);
         .map_err(|err| AppError::from((err, usecase)))
     }
 
     pub async fn get_by_id(&self, id: &UserId, usecase: AppUseCase) -> Result<UserEntry, AppError> {
+		log::debug!(">>> Entering get_by_id(id=(unprintable),usecase=(unprintable))");
+		let __log_start = std::time::Instant::now();
         //
         let entry = sqlx::query_as::<_, UserEntry>(
             "SELECT email, username, password, salt, bio, image FROM accounts 
@@ -59,6 +73,9 @@ impl UsersRepo {
         .bind(id.as_value())
         .fetch_one(self.dbcp.as_ref())
         .await;
+		log::error!("Exception in get_by_id(id=(unprintable),usecase=(unprintable)): (unprintable)");
+        log::info!("get_by_id(id,usecase)=(unprintable),(unprintable): database query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting get_by_id(id=(unprintable),usecase=(unprintable))");
         match entry {
             Ok(entry) => Ok(entry),
             Err(err) => Err(AppError::from((err, usecase))),
@@ -70,6 +87,7 @@ impl UsersRepo {
         curr_user_id: &UserId,
         followed_username: &String,
     ) -> Result<UserProfile, AppError> {
+		log::debug!(">>> Entering follow_user(curr_user_id=(unprintable),followed_username={})", followed_username);
         //
         let followed_user_id: UserId;
         match sqlx::query_as::<_, UserId>("SELECT id FROM accounts WHERE username = $1")
@@ -77,6 +95,7 @@ impl UsersRepo {
             .fetch_one(self.dbcp.as_ref())
             .await
         {
+			log::error!("Exception in follow_user(curr_user_id=(unprintable),followed_username={}): (unprintable)", followed_username);
             Ok(id) => followed_user_id = id,
             Err(err) => match err {
                 sqlx::Error::RowNotFound => {
@@ -106,6 +125,7 @@ impl UsersRepo {
                 )
                 .await
             }
+            log::debug!("<<< Exiting follow_user(curr_user_id=(unprintable),followed_username={})", followed_username);
             Err(err) => Err(AppError::from((err, AppUseCase::FollowUser))),
         }
     }
@@ -113,6 +133,10 @@ impl UsersRepo {
     pub async fn unfollow_user(
         &self,
         curr_user_id: &UserId,
+		log::debug!(">>> Entering unfollow_user(curr_user_id=(unprintable),followed_username={})", followed_username);
+		log::info!("unfollow_user(curr_user_id,followed_username)=(unprintable),{}: find query executed in {} ms", followed_username, __log_start.elapsed().as_millis());
+		log::error!("Exception in unfollow_user(curr_user_id=(unprintable),followed_username={}): (unprintable)", followed_username);
+            log::debug!("<<< Exiting unfollow_user(curr_user_id=(unprintable),followed_username={})", followed_username);
         followed_username: &String,
     ) -> Result<UserProfile, AppError> {
         //
@@ -121,6 +145,7 @@ impl UsersRepo {
                 .bind(followed_username)
                 .fetch_one(self.dbcp.as_ref())
                 .await?;
+				log::info!("unfollow_user(curr_user_id,followed_username)=(unprintable),{}: find query executed in {} ms", followed_username, __log_start.elapsed().as_millis());
         match sqlx::query("DELETE FROM followings WHERE user_id = $1 AND followed_user_id = $2")
             .bind(curr_user_id.as_value())
             .bind(followed_user_id.as_value())
@@ -145,8 +170,11 @@ impl UsersRepo {
         username: &String,
         usecase: AppUseCase,
     ) -> Result<UserProfile, AppError> {
+		log::debug!(">>> Entering get_profile_by_username(curr_user_id=(unprintable),username={},usecase=(unprintable))", username);
         //
         let mut user_id = 0_i64;
+		let __log_start = std::time::Instant::now();
+        log::debug!("get_profile_by_username(curr_user_id=(unprintable),username={},usecase=(unprintable)): user_id → {}", username, user_id);
         let res = sqlx::query(
             "SELECT id, bio, image, COUNT(f.user_id) AS following FROM accounts a
              LEFT OUTER JOIN followings f ON f.followed_user_id = a.id AND f.user_id = $2
@@ -157,6 +185,8 @@ impl UsersRepo {
         .bind(curr_user_id.as_value())
         .map(|row: PgRow| {
             user_id = row.get("id");
+			log::debug!("get_profile_by_username(curr_user_id=(unprintable),username={},usecase=(unprintable)): user_id → {}", username, user_id);
+            log::info!("get_profile_by_username(curr_user_id,username,usecase)=(unprintable),{},(unprintable): database query executed in {} ms", username, __log_start.elapsed().as_millis());
             UserProfile {
                 user_id,
                 username: username.clone(),
@@ -167,6 +197,8 @@ impl UsersRepo {
         })
         .fetch_one(self.dbcp.as_ref())
         .await;
+		log::error!("Exception in get_profile_by_username(curr_user_id=(unprintable),username={},usecase=(unprintable)): (unprintable)", username);
+        log::debug!("<<< Exiting get_profile_by_username(curr_user_id=(unprintable),username={},usecase=(unprintable))", username);
         match res {
             Ok(result) => Ok(result),
             Err(err) => Err(AppError::from((err, usecase))),
@@ -174,6 +206,7 @@ impl UsersRepo {
     }
 
     pub async fn get_profile_by_id(&self, user_id: i64) -> Result<UserProfile, AppError> {
+		log::debug!(">>> Entering get_profile_by_id(user_id={})", user_id);
         //
         let res = sqlx::query(
             "SELECT username, bio, image, COUNT(f.user_id) AS following FROM accounts a
@@ -191,6 +224,8 @@ impl UsersRepo {
         })
         .fetch_one(self.dbcp.as_ref())
         .await;
+		log::error!("Exception in get_profile_by_id(user_id={}): (unprintable)", user_id);
+        log::debug!("<<< Exiting get_profile_by_id(user_id={})", user_id);
         match res {
             Ok(result) => Ok(result),
             Err(err) => Err(AppError::from(err)),
@@ -198,11 +233,14 @@ impl UsersRepo {
     }
 
     async fn _get_followings(&self, user_id: i64) -> Result<Vec<UserId>, AppError> {
+		log::debug!(">>> Entering _get_followings(user_id={})", user_id);
         //
         let result = sqlx::query("SELECT followed_user_id FROM followings WHERE user_id = $1")
             .bind(user_id)
             .map(|row: PgRow| UserId::from(row.get::<i64, _>("followed_user_id")))
             .fetch_all(self.dbcp.as_ref())
+			log::info!("_get_followings(user_id)={}: find query executed in {} ms", user_id, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting _get_followings(user_id={})", user_id);
             .await?;
         Ok(result)
     }
@@ -239,9 +277,11 @@ impl UsersRepo {
                 .execute(self.dbcp.as_ref())
                 .await
                 {
+					log::error!("Exception in update_by_id(id=(unprintable),email={:?},bio={:?},image={:?}): (unprintable)", email, bio, image);
                     Ok(_) => Ok(entry),
                     Err(err) => Err(AppError::from((err, AppUseCase::UpdateUser))),
                 }
+            log::debug!("<<< Exiting update_by_id(id=(unprintable),email={:?},bio={:?},image={:?})", email, bio, image);
             }
             Err(err) => Err(err),
         }
@@ -261,6 +301,8 @@ impl FromRow<'_, PgRow> for User {
             username: row.get("username"),
             bio: row.get("bio"),
             image: row.get("image"),
+		log::debug!(">>> Entering from_row(row=(unprintable))");
+        log::debug!("<<< Exiting from_row(row=(unprintable))");
         })
     }
 }
