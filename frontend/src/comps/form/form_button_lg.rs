@@ -8,7 +8,9 @@ pub struct FormButtonProps<'a> {
 
 pub fn FormButton_Lg<'a>(cx: Scope<'a, FormButtonProps<'a>>) -> Element {
     cx.render(rsx! {
+		log::debug!(">>> Entering FormButton_Lg(cx=(unprintable))");
         button {
+			log::debug!("<<< Exiting FormButton_Lg(cx=(unprintable))");
             class: "btn btn-lg btn-primary pull-xs-right",
             r#type: "button",
             onclick: move |evt| cx.props.onclick.call(evt),

@@ -10,6 +10,7 @@ pub fn respond_with_user_dto(
     bio: String,
     image: Option<String>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering respond_with_user_dto(email={},token=<redacted>,username={},bio={},image={:?})", email, username, bio, image);
     //
     let dto = UserDTO {
         email,
@@ -18,5 +19,6 @@ pub fn respond_with_user_dto(
         bio,
         image,
     };
+	log::debug!("<<< Exiting respond_with_user_dto(email={},token=<redacted>,username={},bio={},image={:?})", email, username, bio, image);
     (StatusCode::OK, Json(json!({ "user": dto })))
 }

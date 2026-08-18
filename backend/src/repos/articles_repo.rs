@@ -14,12 +14,18 @@ pub struct ArticlesRepo {
 impl ArticlesRepo {
     //
     pub fn new(dbcp: Arc<DbConnPool>) -> Self {
+		log::debug!(">>> Entering new(dbcp=(unprintable))");
+        log::debug!("<<< Exiting new(dbcp=(unprintable))");
         Self { dbcp }
     }
 
     pub async fn get_articles(&self) -> Result<Vec<Article>, AppError> {
+		log::debug!(">>> Entering get_articles()");
         //
         let conn = self.dbcp.as_ref();
+		let __log_start = std::time::Instant::now();
+        log::debug!("get_articles(): conn → (unprintable)");
+        log::info!("get_articles(): database query executed in {} ms", __log_start.elapsed().as_millis());
         let mut res = sqlx::query(
             "SELECT count(fa.user_id) AS favorites_count,
                     a.id, a.slug, a.title, a.description, a.body, a.created_at, a.updated_at,
@@ -32,6 +38,7 @@ impl ArticlesRepo {
         )
         .map(|r: PgRow| {
             let following = r.get::<i64, _>("following") > 0;
+			log::debug!("get_articles(): following → (unprintable)");
             let author: UserProfile = UserProfile {
                 user_id: r.get("user_id"),
                 username: r.get("username"),
@@ -60,12 +67,17 @@ impl ArticlesRepo {
             }
         }
 
+		log::debug!("<<< Exiting get_articles()");
         res
     }
 
     pub async fn get_article(&self, slug: &String) -> Result<Option<Article>, AppError> {
+		log::debug!(">>> Entering get_article(slug={})", slug);
         //
         let conn = self.dbcp.as_ref();
+		let __log_start = std::time::Instant::now();
+        log::debug!("get_article(slug={}): conn → (unprintable)", slug);
+        log::info!("get_article(slug)={}: database query executed in {} ms", slug, __log_start.elapsed().as_millis());
         let mut article = sqlx::query(
             "SELECT COUNT(fa.user_id), a.id, a.slug, a.title, a.description, a.body, a.created_at, a.updated_at,
              u.id as user_id, u.username, u.bio, u.image, COUNT(f.user_id) as following
@@ -100,6 +112,8 @@ impl ArticlesRepo {
 
         if let Some(ref mut a) = article {
             self.get_tags(conn, a).await?;
+		log::debug!("get_article(slug={}): following → (unprintable)", slug);
+        log::debug!("<<< Exiting get_article(slug={})", slug);
             return Ok(Some(a.clone()));
         }
 
@@ -107,17 +121,22 @@ impl ArticlesRepo {
     }
 
     async fn get_tags(&self, conn: &Pool<Postgres>, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering get_tags(conn=(unprintable),a=(unprintable))");
+		let __log_start = std::time::Instant::now();
         //
         sqlx::query("SELECT tag FROM tags_articles WHERE article_id = $1")
             .bind(a.id)
             .map(|r: PgRow| a.tag_list.push(r.get("tag")))
             .fetch_all(conn)
+			log::info!("get_tags(conn,a)=(unprintable),(unprintable): find query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting get_tags(conn=(unprintable),a=(unprintable))");
             .await?;
         Ok(())
     }
 
     /// Add an `Article` into the store. It updates its `id`, `created_at` and `updated_at` attributes.
     pub async fn add(&self, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering add(a=(unprintable))");
         //
         let mut txn = self.dbcp.begin().await?;
 
@@ -160,19 +179,25 @@ impl ArticlesRepo {
         } else {
             txn.commit().await?;
         }
+		log::debug!("add(a=(unprintable)): a.updated_at → (unprintable)");
+        log::debug!("<<< Exiting add(a=(unprintable))");
         Ok(())
     }
 
     pub async fn delete(&self, slug: String) -> Result<(), AppError> {
+		log::debug!(">>> Entering delete(slug={})", slug);
         //
         sqlx::query("DELETE FROM articles WHERE slug=$1")
             .bind(slug)
             .execute(self.dbcp.as_ref())
+			log::info!("delete(slug)={}: delete query executed in {} ms", slug, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting delete(slug={})", slug);
             .await?;
         Ok(())
     }
 
     pub async fn update(&self, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering update(a=(unprintable))");
         //
         let mut txn = self.dbcp.begin().await?;
         if let Err(err) = sqlx::query(
@@ -208,6 +233,12 @@ impl ArticlesRepo {
         } else {
             txn.commit().await?;
         }
+		let __log_start = std::time::Instant::now();
+        let __log_start = std::time::Instant::now();
+        log::error!("Exception in update(a=(unprintable)): (unprintable)");
+        log::info!("update(a)=(unprintable): database query executed in {} ms", __log_start.elapsed().as_millis());
+        log::info!("update(a)=(unprintable): update query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting update(a=(unprintable))");
         Ok(())
     }
 
@@ -216,6 +247,9 @@ impl ArticlesRepo {
         txn: &mut Transaction<'a, Postgres>,
         article_id: i64,
         tag_list: &Vec<String>,
+		log::debug!(">>> Entering set_tags(txn=(unprintable),article_id={},tag_list={:?},is_new={})", article_id, tag_list, is_new);
+		log::info!("set_tags(txn,article_id,tag_list,is_new)=(unprintable),{},{:?},{}: delete query executed in {} ms", article_id, tag_list, is_new, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting set_tags(txn=(unprintable),article_id={},tag_list={:?},is_new={})", article_id, tag_list, is_new);
         is_new: bool,
     ) -> Result<(), sqlx::Error> {
         //
@@ -245,6 +279,7 @@ impl ArticlesRepo {
     }
 
     fn render_app_error(from_db_err: sqlx::Error, slug: &String) -> AppError {
+		log::debug!(">>> Entering render_app_error(from_db_err=(unprintable),slug={})", slug);
         //
         let mut res_err = AppError::Ignorable;
         if let Some(e) = from_db_err.as_database_error() {
@@ -256,6 +291,7 @@ impl ArticlesRepo {
         } else {
             res_err = AppError::from(from_db_err)
         };
+		log::debug!("<<< Exiting render_app_error(from_db_err=(unprintable),slug={})", slug);
         res_err
     }
 }

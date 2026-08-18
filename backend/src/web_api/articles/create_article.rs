@@ -24,6 +24,9 @@ pub struct CreateArticleInputArticleKey {
 pub async fn create_article(
     State(state): State<AppState>,
     user_id: UserId,
+	log::debug!(">>> Entering create_article(user_id=(unprintable))");
+	log::error!("Exception in create_article(user_id=(unprintable)): (unprintable)");
+                log::debug!("<<< Exiting create_article(user_id=(unprintable))");
     InputJson(input): InputJson<CreateArticleInput>,
 ) -> (StatusCode, Json<Value>) {
     //

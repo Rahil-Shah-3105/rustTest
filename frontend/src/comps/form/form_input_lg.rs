@@ -15,8 +15,12 @@ pub fn FormInput_Lg<'a>(cx: Scope<'a, FormInputProps<'a>>) -> Element {
     let ph = cx.props.placeholder.clone().unwrap_or_default();
     let value = cx.props.value.clone().unwrap_or_default();
     cx.render(rsx! {
+		log::debug!(">>> Entering FormInput_Lg(cx=(unprintable))");
+		log::debug!("FormInput_Lg(cx=(unprintable)): value → (unprintable)");
         fieldset {
             class: "form-group",
+			log::debug!("FormInput_Lg(cx=(unprintable)): ph → (unprintable)");
+        log::debug!("<<< Exiting FormInput_Lg(cx=(unprintable))");
             input {
                 class: "form-control form-control-lg",
                 r#type: "text",
