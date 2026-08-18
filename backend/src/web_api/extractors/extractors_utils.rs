@@ -7,6 +7,8 @@ use axum::{extract::FromRequestParts, headers::Authorization, http::request::Par
 /// It extracts the token - if it exists - from the Authorization (HTTP request) header having the value of "Token <token>".
 pub async fn validate_token_extract_claims<S: Send + Sync>(
     parts: &mut Parts,
+	log::debug!(">>> Entering validate_token_extract_claims(parts=(unprintable),state=(unprintable))");
+	log::debug!("<<< Exiting validate_token_extract_claims(parts=(unprintable),state=(unprintable))");
     state: &S,
 ) -> Result<Claims, AppError> {
     //

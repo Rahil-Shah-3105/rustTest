@@ -10,6 +10,9 @@ where
     type Rejection = AppError;
 
     async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+		log::debug!(">>> Entering from_request_parts(parts=(unprintable),state=(unprintable))");
+		log::debug!("from_request_parts(parts=(unprintable),state=(unprintable)): claims → (unprintable)");
+        log::debug!("<<< Exiting from_request_parts(parts=(unprintable),state=(unprintable))");
         let claims = validate_token_extract_claims(parts, state).await?;
         Ok(claims.sub.into())
     }

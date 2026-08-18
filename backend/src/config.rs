@@ -20,6 +20,8 @@ impl DatabaseSettings {
     //
     /// Get the string used for connecting to the database.
     pub fn connection_string(&self) -> Secret<String> {
+		log::debug!(">>> Entering connection_string()");
+        log::debug!("<<< Exiting connection_string()");
         Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
             self.username,
@@ -32,6 +34,8 @@ impl DatabaseSettings {
 
     /// Such string allows connecting to the Postgres instance, without specifying a database.
     pub fn connection_string_without_db(&self) -> Secret<String> {
+		log::debug!(">>> Entering connection_string_without_db()");
+        log::debug!("<<< Exiting connection_string_without_db()");
         Secret::new(format!(
             "postgres://{}:{}@{}:{}",
             self.username,
@@ -57,6 +61,8 @@ pub enum Environment {
 impl Environment {
     pub fn as_str(&self) -> &'static str {
         match self {
+			log::debug!(">>> Entering as_str()");
+        log::debug!("<<< Exiting as_str()");
             Environment::Local => "local",
             Environment::Production => "production",
         }
@@ -67,6 +73,8 @@ impl TryFrom<String> for Environment {
     type Error = String;
 
     fn try_from(s: String) -> Result<Self, Self::Error> {
+		log::debug!(">>> Entering try_from(s={})", s);
+        log::debug!("<<< Exiting try_from(s={})", s);
         match s.to_lowercase().as_str() {
             "local" => Ok(Environment::Local),
             "production" => Ok(Environment::Production),
@@ -79,8 +87,11 @@ impl TryFrom<String> for Environment {
 
 /// Get the application config.
 pub fn get_config() -> Result<AppConfig, config::ConfigError> {
+	log::debug!(">>> Entering get_config()");
     //
     let base_dir = std::env::current_dir().expect("Failed to determine the current directory");
+	log::debug!("get_config(): base_dir → (unprintable)");
+	log::debug!("get_config(): config_dir → (unprintable)");
     let config_dir = base_dir.join("config");
 
     // In the `./config` directory we have 3 yaml files: base, local, and production.
@@ -93,6 +104,7 @@ pub fn get_config() -> Result<AppConfig, config::ConfigError> {
         .expect("Failed to parse APP_ENVIRONMENT");
 
     let env_src =
+	log::debug!("<<< Exiting get_config()");
         config::File::with_name(config_dir.join(env.as_str()).to_str().unwrap()).required(true);
 
     config::Config::builder()

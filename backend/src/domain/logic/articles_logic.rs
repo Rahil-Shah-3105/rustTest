@@ -25,6 +25,8 @@ pub struct UpdateArticleInput {
 impl ArticlesMgr {
     //
     pub fn new(articles_repo: ArticlesRepo, user_repo: Arc<UsersRepo>) -> Self {
+		log::debug!(">>> Entering new(articles_repo=(unprintable),user_repo=(unprintable))");
+        log::debug!("<<< Exiting new(articles_repo=(unprintable),user_repo=(unprintable))");
         Self {
             articles_repo,
             user_repo,
@@ -32,10 +34,14 @@ impl ArticlesMgr {
     }
 
     pub async fn get_articles(&self) -> Result<Vec<Article>, AppError> {
+		log::debug!(">>> Entering get_articles()");
+        log::debug!("<<< Exiting get_articles()");
         self.articles_repo.get_articles().await
     }
 
     pub async fn get_article(&self, slug: &String) -> Result<Option<Article>, AppError> {
+		log::debug!(">>> Entering get_article(slug={})", slug);
+        log::debug!("<<< Exiting get_article(slug={})", slug);
         self.articles_repo.get_article(slug).await
     }
 
@@ -47,6 +53,7 @@ impl ArticlesMgr {
         tag_list: Vec<String>,
         author_id: UserId,
     ) -> Result<Article, AppError> {
+		log::debug!(">>> Entering create_article(title={},description={},body={},tag_list={:?},author_id=(unprintable))", title, description, body, tag_list);
         //
         let slug = slugify(&title);
         let mut a = Article::new_basic(
@@ -61,11 +68,13 @@ impl ArticlesMgr {
         a.author = self
             .user_repo
             .get_profile_by_id(author_id.as_value())
+			log::debug!("<<< Exiting create_article(title={},description={},body={},tag_list={:?},author_id=(unprintable))", title, description, body, tag_list);
             .await?;
         Ok(a)
     }
 
     pub async fn delete_article(&self, curr_user_id: UserId, slug: String) -> Result<(), AppError> {
+		log::debug!(">>> Entering delete_article(curr_user_id=(unprintable),slug={})", slug);
         //
         match self.get_article(&slug).await {
             Ok(a) => match a {
@@ -81,9 +90,11 @@ impl ArticlesMgr {
             },
             Err(err) => {
                 log::error!("Failed to delete an article: {err}");
+				log::debug!("<<< Exiting delete_article(curr_user_id=(unprintable),slug={})", slug);
                 Err(AppError::InternalErr)
             }
         }
+	log::info!("delete_article(curr_user_id,slug)=(unprintable),{}: delete query executed in {} ms", slug, __log_start.elapsed().as_millis());
     }
 
     pub async fn update_article(
