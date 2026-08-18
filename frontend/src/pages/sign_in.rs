@@ -15,9 +15,18 @@ use crate::{
 };
 
 pub fn SignInPage(cx: Scope) -> Element {
+	log::debug!(">>> Entering SignInPage(cx=(unprintable))");
     //
     let email = use_state(&cx, String::new);
+	log::debug!("SignInPage(cx=(unprintable)): email → {}", email);
     let password = use_state(&cx, String::new);
+	log::warn!("SignInPage(cx=(unprintable)): password → {}", password);
+	log::debug!("SignInPage(cx=(unprintable)): hide_invalid_creds → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): hide_internal_err → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): router → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): session_storage → (unprintable)");
+	log::debug!("SignInPage(cx=(unprintable)): token_state → (unprintable)");
+	log::warn!("SignInPage(cx=(unprintable)): token → (unprintable)");
     let hide_invalid_creds = use_state(&cx, String::new);
     let hide_internal_err = use_state(&cx, String::new);
     let router = use_router(&cx);
@@ -27,14 +36,18 @@ pub fn SignInPage(cx: Scope) -> Element {
     if token.len() > 0 {
         session_storage.insert(TOKEN, token);
         let app_state = use_shared_state::<AppState>(cx).unwrap();
+		log::debug!("SignInPage(cx=(unprintable)): app_state → (unprintable)");
         app_state.write().token = Some(token.clone());
         router.push_route("/", None, None);
     }
 
     // TODO: Temporary used during development.
     let temp_email = "joe@black.com".to_string();
+	log::debug!("SignInPage(cx=(unprintable)): temp_email → {}", temp_email);
     let temp_pass = "123".to_string();
+	log::debug!("SignInPage(cx=(unprintable)): temp_pass → {}", temp_pass);
 
+    log::debug!("<<< Exiting SignInPage(cx=(unprintable))");
     cx.render(rsx! {
         div {
             class: "auth-page",
@@ -102,6 +115,13 @@ pub fn SignInPage(cx: Scope) -> Element {
                                                         }
                                                     }
                                                 }
+												log::debug!(">>> Entering login(email={},password=<redacted>)", email);
+												log::debug!("login(email={},password=<redacted>): req_creds → (unprintable)", email);
+												log::debug!("login(email={},password=<redacted>): req_body → (unprintable)", email);
+												log::debug!("login(email={},password=<redacted>): 200 → {}", email, 200);
+												log::debug!("login(email={},password=<redacted>): 401 → {}", email, 401);
+												log::info!("login(email,password)={},{}: external service call took {} ms", email, password, __log_start.elapsed().as_millis());
+    log::debug!("<<< Exiting login(email={},password=<redacted>)", email);
                                             }
                                         }
                                     });
@@ -117,6 +137,8 @@ pub fn SignInPage(cx: Scope) -> Element {
 }
 
 async fn login(email: String, password: String) -> Result<String, String> {
+	log::debug!(">>> Entering login(email={},password=<redacted>)", email);
+	let __log_start = std::time::Instant::now();
     let mut req_creds = HashMap::new();
     req_creds.insert("email", email);
     req_creds.insert("password", password);
@@ -154,6 +176,8 @@ async fn login(email: String, password: String) -> Result<String, String> {
         Err(e) => {
             log::error!(":: SignInPage :: login :: Request failed: {}", e);
             Err("internal_error".into())
+		log::info!("login(email,password)={},{}: external service call took {} ms", email, password, __log_start.elapsed().as_millis());
+    log::debug!("<<< Exiting login(email={},password=<redacted>)", email);
         }
     }
 }

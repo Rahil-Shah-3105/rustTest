@@ -11,12 +11,15 @@ pub async fn get_current_user(
     State(state): State<AppState>,
     curr_user_id: UserId,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering get_current_user(curr_user_id=(unprintable))");
     //
     match state
         .user_repo
         .get_by_id(&curr_user_id, AppUseCase::AnyTokenProtectedOperation)
         .await
     {
+		log::error!("Exception in get_current_user(curr_user_id=(unprintable)): (unprintable)");
+        log::debug!("<<< Exiting get_current_user(curr_user_id=(unprintable))");
         Ok(entry) => respond_with_user_dto(
             entry.user.email,
             None,

@@ -18,6 +18,8 @@ where
         })),
     )
 }
+log::debug!(">>> Entering respond_internal_server_error(err=(unprintable))");
+    log::debug!("<<< Exiting respond_internal_server_error(err=(unprintable))");
 
 /// Utility function for responding with `400 Bad Request` code and an error description.
 pub fn respond_bad_request<E>(err: E) -> (StatusCode, Json<Value>)
@@ -31,6 +33,8 @@ where
         })),
     )
 }
+log::debug!(">>> Entering respond_bad_request(err=(unprintable))");
+    log::debug!("<<< Exiting respond_bad_request(err=(unprintable))");
 
 /// Utility function for responding with `401 Unauthorized` code and an error description.
 pub fn respond_unauthorized<E>(err: E) -> (StatusCode, Json<Value>)
@@ -44,6 +48,8 @@ where
         })),
     )
 }
+log::debug!(">>> Entering respond_unauthorized(err=(unprintable))");
+    log::debug!("<<< Exiting respond_unauthorized(err=(unprintable))");
 
 /// Utility function for responding with `404 Not Found` code and an error description.
 pub fn respond_not_found<E>(err: E) -> (StatusCode, Json<Value>)
@@ -57,11 +63,14 @@ where
         })),
     )
 }
+log::debug!(">>> Entering respond_not_found(err=(unprintable))");
+    log::debug!("<<< Exiting respond_not_found(err=(unprintable))");
 
 // Implementation of Axum's `IntoResponse` trait, so that
 // an `AppError` can be converted into an HTTP response.
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
+		log::debug!(">>> Entering into_response()");
         //
         let body = Json(json!({
             "error": self.to_string()
@@ -72,6 +81,7 @@ impl IntoResponse for AppError {
             }
             _ => (StatusCode::INTERNAL_SERVER_ERROR, body),
         };
+		log::debug!("<<< Exiting into_response()");
         response_tuple.into_response()
     }
 }
