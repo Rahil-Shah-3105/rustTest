@@ -20,6 +20,8 @@ pub struct RegisterUserInput {
 impl From<RegisterUserInput> for User {
     //
     fn from(val: RegisterUserInput) -> Self {
+		log::debug!(">>> Entering from(val={:?})", val);
+        log::debug!("<<< Exiting from(val={:?})", val);
         Self {
             id: 0, // not relevant
             email: val.user.email,
@@ -41,8 +43,10 @@ pub async fn register_user(
     State(state): State<AppState>,
     InputJson(input): InputJson<RegisterUserInput>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering register_user()");
     //
     let pwd = input.user.password.clone();
+	log::debug!("register_user(): pwd → (unprintable)");
     let user: User = input.into();
     match state.auth_mgr.register_user(&user, pwd).await {
         Ok(id) => match create_jwt(id, user.email.clone(), user.username.clone()) {
@@ -51,6 +55,8 @@ pub async fn register_user(
             }
             Err(err) => {
                 log::error!("Failed to create JWT: {err}");
+				log::error!("Exception in register_user(): (unprintable)");
+                log::debug!("<<< Exiting register_user()");
                 respond_internal_server_error(err)
             }
         },
