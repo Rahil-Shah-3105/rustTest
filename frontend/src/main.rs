@@ -15,14 +15,17 @@ use dioxus_use_storage::use_session_storage;
 use sir::{global_css, AppStyle};
 
 fn main() {
+	log::debug!(">>> Entering main()");
     // Init debug tool for WebAssembly.
     wasm_logger::init(wasm_logger::Config::default());
     console_error_panic_hook::set_once();
 
+	log::debug!("<<< Exiting main()");
     dioxus_web::launch(App);
 }
 
 fn App(cx: Scope) -> Element {
+	log::debug!(">>> Entering App()");
     //
     global_css!(" a:focus { outline: 0; } ");
 
@@ -32,6 +35,7 @@ fn App(cx: Scope) -> Element {
     }
     use_shared_state_provider(cx, || app_state);
 
+	log::debug!("<<< Exiting App()");
     cx.render(rsx!(
         AppStyle{ },
         Router {

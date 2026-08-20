@@ -18,11 +18,14 @@ pub async fn follow_user(
     Path(username): Path<String>,
     curr_user_id: UserId,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering follow_user()");
     //
+	log::error!("Exception in follow_user(): (unprintable)");
     match state.user_repo.follow_user(&curr_user_id, &username).await {
         Ok(profile) => (StatusCode::OK, Json(json!({ "profile": profile }))),
         Err(err) => match err {
             AppError::Ignorable => {
+				log::debug!("<<< Exiting follow_user()");
                 get_user_profile(State(state), curr_user_id, Path(username)).await
             }
             AppError::NotFound(_) => respond_not_found(err),
@@ -36,6 +39,9 @@ pub async fn follow_user(
 pub async fn unfollow_user(
     Path(username): Path<String>,
     user_claims: Claims,
+	log::debug!(">>> Entering unfollow_user()");
+	log::error!("Exception in unfollow_user(): (unprintable)");
+	log::debug!("<<< Exiting unfollow_user()");
     State(state): State<AppState>,
 ) -> (StatusCode, Json<Value>) {
     //

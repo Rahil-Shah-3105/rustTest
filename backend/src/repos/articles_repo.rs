@@ -14,10 +14,12 @@ pub struct ArticlesRepo {
 impl ArticlesRepo {
     //
     pub fn new(dbcp: Arc<DbConnPool>) -> Self {
+		log::debug!(">>> Entering new()");
         Self { dbcp }
     }
 
     pub async fn get_articles(&self) -> Result<Vec<Article>, AppError> {
+		log::debug!(">>> Entering get_articles()");
         //
         let conn = self.dbcp.as_ref();
         let mut res = sqlx::query(
@@ -60,10 +62,12 @@ impl ArticlesRepo {
             }
         }
 
+		log::debug!("<<< Exiting get_articles()");
         res
     }
 
     pub async fn get_article(&self, slug: &String) -> Result<Option<Article>, AppError> {
+		log::debug!(">>> Entering get_article(slug={})", slug);
         //
         let conn = self.dbcp.as_ref();
         let mut article = sqlx::query(
@@ -103,21 +107,29 @@ impl ArticlesRepo {
             return Ok(Some(a.clone()));
         }
 
+		let __log_start = std::time::Instant::now();
+        log::info!("get_article(slug)={}: database query executed in {} ms", slug, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting get_article(slug={})", slug);
         Ok(article)
     }
 
     async fn get_tags(&self, conn: &Pool<Postgres>, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering get_tags()");
+		let __log_start = std::time::Instant::now();
         //
         sqlx::query("SELECT tag FROM tags_articles WHERE article_id = $1")
             .bind(a.id)
             .map(|r: PgRow| a.tag_list.push(r.get("tag")))
             .fetch_all(conn)
+			log::info!("get_tags(): find query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting get_tags()");
             .await?;
         Ok(())
     }
 
     /// Add an `Article` into the store. It updates its `id`, `created_at` and `updated_at` attributes.
     pub async fn add(&self, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering add()");
         //
         let mut txn = self.dbcp.begin().await?;
 
@@ -160,19 +172,28 @@ impl ArticlesRepo {
         } else {
             txn.commit().await?;
         }
+		let __log_start = std::time::Instant::now();
+        let __log_start = std::time::Instant::now();
+        log::info!("add(): database query executed in {} ms", __log_start.elapsed().as_millis());
+        log::info!("add(): save query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting add()");
         Ok(())
     }
 
     pub async fn delete(&self, slug: String) -> Result<(), AppError> {
+		log::debug!(">>> Entering delete(slug={})", slug);
         //
         sqlx::query("DELETE FROM articles WHERE slug=$1")
             .bind(slug)
             .execute(self.dbcp.as_ref())
+			log::info!("delete(slug)={}: delete query executed in {} ms", slug, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting delete(slug={})", slug);
             .await?;
         Ok(())
     }
 
     pub async fn update(&self, a: &mut Article) -> Result<(), AppError> {
+		log::debug!(">>> Entering update()");
         //
         let mut txn = self.dbcp.begin().await?;
         if let Err(err) = sqlx::query(
@@ -208,6 +229,12 @@ impl ArticlesRepo {
         } else {
             txn.commit().await?;
         }
+		let __log_start = std::time::Instant::now();
+        let __log_start = std::time::Instant::now();
+        log::error!("Exception in update(): (unprintable)");
+        log::info!("update(): database query executed in {} ms", __log_start.elapsed().as_millis());
+        log::info!("update(): update query executed in {} ms", __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting update()");
         Ok(())
     }
 
@@ -216,6 +243,9 @@ impl ArticlesRepo {
         txn: &mut Transaction<'a, Postgres>,
         article_id: i64,
         tag_list: &Vec<String>,
+		log::debug!(">>> Entering set_tags(article_id={},tag_list={:?},is_new={})", article_id, tag_list, is_new);
+		log::info!("set_tags(article_id,tag_list,is_new)={},{:?},{}: delete query executed in {} ms", article_id, tag_list, is_new, __log_start.elapsed().as_millis());
+        log::debug!("<<< Exiting set_tags(article_id={},tag_list={:?},is_new={})", article_id, tag_list, is_new);
         is_new: bool,
     ) -> Result<(), sqlx::Error> {
         //
@@ -245,6 +275,7 @@ impl ArticlesRepo {
     }
 
     fn render_app_error(from_db_err: sqlx::Error, slug: &String) -> AppError {
+		log::debug!(">>> Entering render_app_error(slug={})", slug);
         //
         let mut res_err = AppError::Ignorable;
         if let Some(e) = from_db_err.as_database_error() {
@@ -256,6 +287,7 @@ impl ArticlesRepo {
         } else {
             res_err = AppError::from(from_db_err)
         };
+		log::debug!("<<< Exiting render_app_error(slug={})", slug);
         res_err
     }
 }

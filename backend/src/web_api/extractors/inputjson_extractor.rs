@@ -30,6 +30,7 @@ where
     type Rejection = (StatusCode, Json<Value>);
 
     async fn from_request(req: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+		log::debug!(">>> Entering from_request()");
         //
         let (mut parts, body) = req.into_parts();
 
@@ -50,8 +51,11 @@ where
             Ok(value) => Ok(Self(value.0)),
             // Convert the error from `axum::Json` into whatever we want.
             Err(rejection) => {
+				log::error!("Exception in from_request(): (unprintable)");
                 let message = rejection.to_string();
+				log::debug!("from_request(): message → {}", message);
                 let reason = find_serde_json_error_source(&rejection);
+				log::debug!("from_request(): reason → {:?}", reason);
 
                 let code = match rejection {
                     JsonRejection::JsonDataError(_) => StatusCode::UNPROCESSABLE_ENTITY,
@@ -67,6 +71,7 @@ where
                         "reason": reason,
                     })),
                 ))
+				log::debug!("<<< Exiting from_request()");
             }
         }
     }
@@ -78,6 +83,7 @@ fn find_serde_json_error_source<E>(err: &E) -> Option<String>
 where
     E: Error + 'static,
 {
+	log::debug!(">>> Entering find_serde_json_error_source()");
     find_error_source::<serde_json::Error>(err).map(|serde_json_err| serde_json_err.to_string())
 }
 
@@ -87,11 +93,13 @@ fn find_error_source<'a, T>(err: &'a (dyn Error + 'static)) -> Option<&'a T>
 where
     T: Error + 'static,
 {
+	log::debug!(">>> Entering find_error_source()");
     if let Some(err) = err.downcast_ref::<T>() {
         Some(err)
     } else if let Some(source) = err.source() {
         find_error_source(source)
     } else {
+		log::debug!("<<< Exiting find_error_source()");
         None
     }
 }

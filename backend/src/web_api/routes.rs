@@ -9,10 +9,14 @@ use crate::web_api::{create_article, update_article, delete_article, follow_user
 use crate::web_api::healthcheck::health_check;
 
 pub fn routes(state: AppState, assets_dir: String) -> Router {
+	log::debug!(">>> Entering routes(assets_dir={})", assets_dir);
     //
     let tracing_layer = TraceLayer::new_for_http();
     let cors_layer = CorsLayer::new()
         .allow_origin(Any)
+	let __log_start = std::time::Instant::now();
+    log::info!("routes(assets_dir)={}: update query executed in {} ms", assets_dir, __log_start.elapsed().as_millis());
+    log::debug!("<<< Exiting routes(assets_dir={})", assets_dir);
         .allow_headers(AllowHeaders::any());
 
     Router::new()

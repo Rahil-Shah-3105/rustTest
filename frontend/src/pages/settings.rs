@@ -6,6 +6,7 @@ use dioxus::{
 use crate::comps::{FormButton_Lg, FormInput_Lg, FormTextarea_Lg};
 
 pub fn SettingsPage(cx: Scope) -> Element {
+	log::debug!(">>> Entering SettingsPage()");
     let profilePictureURL = use_state(&cx, String::new);
     let name = use_state(&cx, String::new);
     let biography = use_state(&cx, String::new);

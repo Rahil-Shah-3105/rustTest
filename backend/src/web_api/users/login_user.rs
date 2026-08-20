@@ -23,6 +23,9 @@ pub struct LoginUserInputUserKey {
 // #[axum_macros::debug_handler]
 pub async fn login_user(
     State(state): State<AppState>,
+	log::debug!(">>> Entering login_user()");
+	log::error!("Exception in login_user(): (unprintable)");
+                log::debug!("<<< Exiting login_user()");
     InputJson(input): InputJson<LoginUserInput>,
 ) -> impl IntoResponse {
     //
