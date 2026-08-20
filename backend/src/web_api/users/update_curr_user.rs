@@ -26,6 +26,9 @@ pub struct UpdateUserInputDTOUserAttrs {
 pub async fn update_current_user(
     State(state): State<AppState>,
     user_id: UserId,
+	log::debug!(">>> Entering update_current_user()");
+	log::error!("Exception in update_current_user(): (unprintable)");
+        log::debug!("<<< Exiting update_current_user()");
     InputJson(input): InputJson<UpdateUserInputDTO>,
 ) -> (StatusCode, Json<Value>) {
     //

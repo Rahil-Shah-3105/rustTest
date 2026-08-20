@@ -30,6 +30,7 @@ impl Article {
         body: String,
         created_at: DateTime<Utc>,
         updated_at: DateTime<Utc>,
+		log::debug!(">>> Entering new(id={},slug={},title={},description={},body={})", id, slug, title, description, body);
         author: UserProfile,
     ) -> Self {
         Self {
@@ -56,6 +57,7 @@ impl Article {
         tag_list: Vec<String>,
         author_id: i64,
     ) -> Self {
+		log::debug!(">>> Entering new_basic(slug={},title={},description={},body={},tag_list={:?},author_id={})", slug, title, description, body, tag_list, author_id);
         Self {
             id: 0,
             slug,

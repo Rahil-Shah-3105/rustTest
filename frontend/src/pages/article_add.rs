@@ -6,6 +6,7 @@ use dioxus::{
 use crate::comps::{FormButton_Lg, FormInput_Lg, FormTextarea_Lg};
 
 pub fn ArticleAdd(cx: Scope) -> Element {
+	log::debug!(">>> Entering ArticleAdd()");
     let title = use_state(&cx, String::new);
     let summary = use_state(&cx, String::new);
     let content = use_state(&cx, String::new);

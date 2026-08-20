@@ -1,7 +1,9 @@
 use dioxus::prelude::*;
 
 pub fn NotFoundPage(cx: Scope) -> Element {
+	log::debug!(">>> Entering NotFoundPage()");
     //
+	log::debug!("<<< Exiting NotFoundPage()");
     cx.render(rsx! {
         div {
             class: "auth-page",

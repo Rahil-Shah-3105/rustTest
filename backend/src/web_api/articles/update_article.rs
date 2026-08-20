@@ -22,6 +22,8 @@ pub async fn update_article(
     State(state): State<AppState>,
     curr_user_id: UserId,
     Path(slug): Path<String>,
+	log::debug!(">>> Entering update_article()");
+	log::debug!("<<< Exiting update_article()");
     Json(input): Json<UpdateArticleInputDTO>,
 ) -> (StatusCode, Json<Value>) {
     //

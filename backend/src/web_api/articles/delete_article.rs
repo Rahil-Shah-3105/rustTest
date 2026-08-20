@@ -15,7 +15,10 @@ pub async fn delete_article(
     curr_user_id: UserId,
     Path(slug): Path<String>,
 ) -> (StatusCode, Json<Value>) {
+	log::debug!(">>> Entering delete_article()");
     //
+	log::error!("Exception in delete_article(): (unprintable)");
+    log::debug!("<<< Exiting delete_article()");
     match state.articles_mgr.delete_article(curr_user_id, slug).await {
         Ok(_) => (StatusCode::NO_CONTENT, Json(Value::default())),
         Err(err) => match err {

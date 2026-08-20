@@ -15,9 +15,12 @@ use crate::{
 };
 
 pub fn SignInPage(cx: Scope) -> Element {
+	log::debug!(">>> Entering SignInPage()");
     //
     let email = use_state(&cx, String::new);
+	log::debug!("SignInPage(): email → {}", email);
     let password = use_state(&cx, String::new);
+	log::warn!("SignInPage(): password → {}", password);
     let hide_invalid_creds = use_state(&cx, String::new);
     let hide_internal_err = use_state(&cx, String::new);
     let router = use_router(&cx);
@@ -33,8 +36,11 @@ pub fn SignInPage(cx: Scope) -> Element {
 
     // TODO: Temporary used during development.
     let temp_email = "joe@black.com".to_string();
+	log::debug!("SignInPage(): temp_email → {}", temp_email);
     let temp_pass = "123".to_string();
+	log::debug!("SignInPage(): temp_pass → {}", temp_pass);
 
+    log::debug!("<<< Exiting SignInPage()");
     cx.render(rsx! {
         div {
             class: "auth-page",
@@ -102,6 +108,11 @@ pub fn SignInPage(cx: Scope) -> Element {
                                                         }
                                                     }
                                                 }
+												log::debug!(">>> Entering login(email={},password=<redacted>)", email);
+												log::debug!("login(email={},password=<redacted>): 200 → {}", email, 200);
+												log::debug!("login(email={},password=<redacted>): 401 → {}", email, 401);
+												log::info!("login(email,password)={},{}: external service call took {} ms", email, password, __log_start.elapsed().as_millis());
+    log::debug!("<<< Exiting login(email={},password=<redacted>)", email);
                                             }
                                         }
                                     });
@@ -117,6 +128,8 @@ pub fn SignInPage(cx: Scope) -> Element {
 }
 
 async fn login(email: String, password: String) -> Result<String, String> {
+	log::debug!(">>> Entering login(email={},password=<redacted>)", email);
+	let __log_start = std::time::Instant::now();
     let mut req_creds = HashMap::new();
     req_creds.insert("email", email);
     req_creds.insert("password", password);
@@ -154,6 +167,8 @@ async fn login(email: String, password: String) -> Result<String, String> {
         Err(e) => {
             log::error!(":: SignInPage :: login :: Request failed: {}", e);
             Err("internal_error".into())
+		log::info!("login(email,password)={},{}: external service call took {} ms", email, password, __log_start.elapsed().as_millis());
+    log::debug!("<<< Exiting login(email={},password=<redacted>)", email);
         }
     }
 }
