@@ -15,7 +15,9 @@ pub fn FormTextarea_Lg<'a>(cx: Scope<'a, FormTextareaProps<'a>>) -> Element {
     let rows = cx.props.rows.unwrap_or(1);
     let ph = cx.props.placeholder.clone().unwrap_or_default();
     cx.render(rsx! {
+		log::debug!(">>> Entering FormTextarea_Lg()");
         fieldset {
+			log::debug!("<<< Exiting FormTextarea_Lg()");
             class: "form-group",
             textarea {
                 class: "form-control form-control-lg",

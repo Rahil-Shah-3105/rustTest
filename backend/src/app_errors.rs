@@ -44,6 +44,7 @@ pub enum AppError {
 impl From<(sqlx::Error, AppUseCase)> for AppError {
     //
     fn from(ctx: (sqlx::Error, AppUseCase)) -> Self {
+		log::debug!(">>> Entering from()");
         log::debug!("from((sqlx::Error, AppUseCase)): ctx={:?}", ctx);
         let err = ctx.0;
         // Start with the use case as the context, and then cover the possible errors within.
