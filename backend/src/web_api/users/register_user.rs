@@ -51,6 +51,7 @@ pub async fn register_user(
             }
             Err(err) => {
                 log::error!("Failed to create JWT: {err}");
+                log::debug!("<<< Exiting register_user()");
                 respond_internal_server_error(err)
             }
         },

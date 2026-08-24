@@ -15,7 +15,9 @@ pub fn FormInput_Lg<'a>(cx: Scope<'a, FormInputProps<'a>>) -> Element {
     let ph = cx.props.placeholder.clone().unwrap_or_default();
     let value = cx.props.value.clone().unwrap_or_default();
     cx.render(rsx! {
+		log::debug!(">>> Entering FormInput_Lg()");
         fieldset {
+			log::debug!("<<< Exiting FormInput_Lg()");
             class: "form-group",
             input {
                 class: "form-control form-control-lg",

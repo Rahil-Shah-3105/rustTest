@@ -25,6 +25,7 @@ pub struct UpdateArticleInput {
 impl ArticlesMgr {
     //
     pub fn new(articles_repo: ArticlesRepo, user_repo: Arc<UsersRepo>) -> Self {
+		log::debug!(">>> Entering new()");
         Self {
             articles_repo,
             user_repo,
@@ -84,6 +85,7 @@ impl ArticlesMgr {
                 Err(AppError::InternalErr)
             }
         }
+	log::info!("delete_article(slug)={}: delete query executed in {} ms", slug, __log_start.elapsed().as_millis());
     }
 
     pub async fn update_article(

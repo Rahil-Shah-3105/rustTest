@@ -15,6 +15,8 @@ impl AuthMgr {
     pub async fn register_user(&self, user: &User, pwd: String) -> Result<i64, AppError> {
         //
         let (pwd, salt) = Self::generate_password(pwd);
+		let __log_start = std::time::Instant::now();
+        log::info!("register_user(pwd)=<redacted>: save query executed in {} ms", __log_start.elapsed().as_millis());
         self.user_repo.save(user, pwd, salt).await
     }
 

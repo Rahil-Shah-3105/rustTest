@@ -18,12 +18,15 @@ pub async fn init_db_pool(cfg: &AppConfig) -> Result<DbConnPool, sqlx::Error> {
 }
 
 pub async fn ping_db(conn: &DbConnPool) -> bool {
+	let __log_start = std::time::Instant::now();
     //
     let z = sqlx::query("SELECT 1").execute(conn).await;
+	log::info!("ping_db(): find query executed in {} ms", __log_start.elapsed().as_millis());
     match z {
         Ok(_) => true,
         Err(e) => {
             log::error!("Failed to ping the database: {e}");
+			log::debug!("<<< Exiting ping_db()");
             false
         }
     }
