@@ -4,6 +4,7 @@ use dioxus_router::Link;
 use crate::commons::AppState;
 
 pub fn Header(cx: Scope) -> Element {
+	log::error!(">>> Entering Header()");
     //
     let app_state = use_shared_state::<AppState>(cx).unwrap();
     log::info!(":: Header :: app_state={:?}", app_state.read());
@@ -11,6 +12,7 @@ pub fn Header(cx: Scope) -> Element {
     let (signed_in, signed_out) = is_signed_in_or_not(app_state);
     log::debug!(":: Header :: signed_in={signed_in} signed_out={signed_out}");
 
+	log::warn!("<<< Exiting Header()");
     cx.render(rsx! {
         nav {
             class:"navbar navbar-light",
@@ -63,10 +65,12 @@ pub fn Header(cx: Scope) -> Element {
 }
 
 fn is_signed_in_or_not<'a>(state: &'a UseSharedState<AppState>) -> (&'a str, &'a str) {
+	log::error!(">>> Entering is_signed_in_or_not()");
     //
     if state.read().token.is_some() {
         ("true", "false")
     } else {
+		log::warn!("<<< Exiting is_signed_in_or_not()");
         ("false", "true")
     }
 }

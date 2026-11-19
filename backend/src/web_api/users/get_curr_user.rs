@@ -11,6 +11,7 @@ pub async fn get_current_user(
     State(state): State<AppState>,
     curr_user_id: UserId,
 ) -> (StatusCode, Json<Value>) {
+	eprintln!("[ERROR] >>> Entering get_current_user()");
     //
     match state
         .user_repo

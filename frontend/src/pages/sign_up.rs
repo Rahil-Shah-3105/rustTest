@@ -7,6 +7,7 @@ use dioxus_router::Link;
 use crate::comps::{FormButton_Lg, FormInput_Lg};
 
 pub fn SignUpPage(cx: Scope) -> Element {
+	log::error!(">>> Entering SignUpPage()");
     let name = use_state(&cx, String::new);
     let email = use_state(&cx, String::new);
     let password = use_state(&cx, String::new);

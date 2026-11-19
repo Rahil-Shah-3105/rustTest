@@ -7,6 +7,7 @@ pub struct AppState {
 
 impl AppState {
     pub fn new() -> Self {
+		eprintln!("[ERROR] >>> Entering new()");
         Self { token: None }
     }
 }

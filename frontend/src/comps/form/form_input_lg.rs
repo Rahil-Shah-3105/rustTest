@@ -12,8 +12,10 @@ pub struct FormInputProps<'a> {
 }
 
 pub fn FormInput_Lg<'a>(cx: Scope<'a, FormInputProps<'a>>) -> Element {
+	eprintln!("[ERROR] >>> Entering FormInput_Lg()");
     let ph = cx.props.placeholder.clone().unwrap_or_default();
     let value = cx.props.value.clone().unwrap_or_default();
+	eprintln!("[WARN] <<< Exiting FormInput_Lg()");
     cx.render(rsx! {
         fieldset {
             class: "form-group",

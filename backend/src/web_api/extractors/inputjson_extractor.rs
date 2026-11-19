@@ -30,6 +30,7 @@ where
     type Rejection = (StatusCode, Json<Value>);
 
     async fn from_request(req: Request<B>, state: &S) -> Result<Self, Self::Rejection> {
+		eprintln!("[ERROR] >>> Entering from_request()");
         //
         let (mut parts, body) = req.into_parts();
 
@@ -50,8 +51,11 @@ where
             Ok(value) => Ok(Self(value.0)),
             // Convert the error from `axum::Json` into whatever we want.
             Err(rejection) => {
+				eprintln!("[ERROR] Exception in from_request(): (unprintable)");
                 let message = rejection.to_string();
+				eprintln!("[ERROR] from_request(): message → {}", message);
                 let reason = find_serde_json_error_source(&rejection);
+				eprintln!("[ERROR] from_request(): reason → {:?}", reason);
 
                 let code = match rejection {
                     JsonRejection::JsonDataError(_) => StatusCode::UNPROCESSABLE_ENTITY,
@@ -78,6 +82,7 @@ fn find_serde_json_error_source<E>(err: &E) -> Option<String>
 where
     E: Error + 'static,
 {
+	eprintln!("[ERROR] >>> Entering find_serde_json_error_source()");
     find_error_source::<serde_json::Error>(err).map(|serde_json_err| serde_json_err.to_string())
 }
 

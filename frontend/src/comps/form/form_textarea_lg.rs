@@ -12,8 +12,10 @@ pub struct FormTextareaProps<'a> {
 }
 
 pub fn FormTextarea_Lg<'a>(cx: Scope<'a, FormTextareaProps<'a>>) -> Element {
+	eprintln!("[ERROR] >>> Entering FormTextarea_Lg()");
     let rows = cx.props.rows.unwrap_or(1);
     let ph = cx.props.placeholder.clone().unwrap_or_default();
+	eprintln!("[WARN] <<< Exiting FormTextarea_Lg()");
     cx.render(rsx! {
         fieldset {
             class: "form-group",

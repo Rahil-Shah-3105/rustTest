@@ -6,9 +6,11 @@ use std::time::Duration;
 pub type DbConnPool = sqlx::Pool<sqlx::Postgres>;
 
 pub async fn init_db_pool(cfg: &AppConfig) -> Result<DbConnPool, sqlx::Error> {
+	log::error!(">>> Entering init_db_pool()");
     //
     let db_url = cfg.database.connection_string();
     let db_url = db_url.expose_secret();
+	log::warn!("<<< Exiting init_db_pool()");
     PgPoolOptions::new()
         .idle_timeout(Duration::from_secs(3))
         .min_connections(1)
@@ -18,12 +20,16 @@ pub async fn init_db_pool(cfg: &AppConfig) -> Result<DbConnPool, sqlx::Error> {
 }
 
 pub async fn ping_db(conn: &DbConnPool) -> bool {
+	log::error!(">>> Entering ping_db()");
+	let __log_start = std::time::Instant::now();
     //
     let z = sqlx::query("SELECT 1").execute(conn).await;
+	log::error!("ping_db(): find query executed in {} ms", __log_start.elapsed().as_millis());
     match z {
         Ok(_) => true,
         Err(e) => {
             log::error!("Failed to ping the database: {e}");
+			log::warn!("<<< Exiting ping_db()");
             false
         }
     }

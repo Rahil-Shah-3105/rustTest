@@ -18,11 +18,14 @@ pub async fn follow_user(
     Path(username): Path<String>,
     curr_user_id: UserId,
 ) -> (StatusCode, Json<Value>) {
+	eprintln!("[ERROR] >>> Entering follow_user()");
     //
+	eprintln!("[ERROR] Exception in follow_user(): (unprintable)");
     match state.user_repo.follow_user(&curr_user_id, &username).await {
         Ok(profile) => (StatusCode::OK, Json(json!({ "profile": profile }))),
         Err(err) => match err {
             AppError::Ignorable => {
+				eprintln!("[WARN] <<< Exiting follow_user()");
                 get_user_profile(State(state), curr_user_id, Path(username)).await
             }
             AppError::NotFound(_) => respond_not_found(err),

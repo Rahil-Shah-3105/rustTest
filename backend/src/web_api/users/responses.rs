@@ -10,6 +10,7 @@ pub fn respond_with_user_dto(
     bio: String,
     image: Option<String>,
 ) -> (StatusCode, Json<Value>) {
+	eprintln!("[ERROR] >>> Entering respond_with_user_dto(email=<redacted>,token=<redacted>,username={},bio={},image={:?})", username, bio, image);
     //
     let dto = UserDTO {
         email,
@@ -18,5 +19,6 @@ pub fn respond_with_user_dto(
         bio,
         image,
     };
+	eprintln!("[WARN] <<< Exiting respond_with_user_dto(email=<redacted>,token=<redacted>,username={},bio={},image={:?})", username, bio, image);
     (StatusCode::OK, Json(json!({ "user": dto })))
 }

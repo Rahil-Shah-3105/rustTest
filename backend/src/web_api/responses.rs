@@ -11,6 +11,7 @@ pub fn respond_internal_server_error<E>(err: E) -> (StatusCode, Json<Value>)
 where
     E: std::error::Error,
 {
+	eprintln!("[ERROR] >>> Entering respond_internal_server_error()");
     (
         StatusCode::INTERNAL_SERVER_ERROR,
         Json(json!({
@@ -24,6 +25,7 @@ pub fn respond_bad_request<E>(err: E) -> (StatusCode, Json<Value>)
 where
     E: std::error::Error,
 {
+	eprintln!("[ERROR] >>> Entering respond_bad_request()");
     (
         StatusCode::BAD_REQUEST,
         Json(json!({
@@ -37,6 +39,7 @@ pub fn respond_unauthorized<E>(err: E) -> (StatusCode, Json<Value>)
 where
     E: std::error::Error,
 {
+	eprintln!("[ERROR] >>> Entering respond_unauthorized()");
     (
         StatusCode::UNAUTHORIZED,
         Json(json!({
@@ -50,6 +53,7 @@ pub fn respond_not_found<E>(err: E) -> (StatusCode, Json<Value>)
 where
     E: std::error::Error,
 {
+	eprintln!("[ERROR] >>> Entering respond_not_found()");
     (
         StatusCode::NOT_FOUND,
         Json(json!({
@@ -62,6 +66,7 @@ where
 // an `AppError` can be converted into an HTTP response.
 impl IntoResponse for AppError {
     fn into_response(self) -> Response {
+		eprintln!("[ERROR] >>> Entering into_response()");
         //
         let body = Json(json!({
             "error": self.to_string()
@@ -72,6 +77,7 @@ impl IntoResponse for AppError {
             }
             _ => (StatusCode::INTERNAL_SERVER_ERROR, body),
         };
+		eprintln!("[WARN] <<< Exiting into_response()");
         response_tuple.into_response()
     }
 }

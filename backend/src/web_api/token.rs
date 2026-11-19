@@ -16,8 +16,10 @@ pub struct Claims {
 
 impl Claims {
     pub fn new(id: i64, email: String, username: String) -> Self {
+		eprintln!("[ERROR] >>> Entering new(id={},email=<redacted>,username={})", id, username);
         let iat = Utc::now();
         let exp = iat + Duration::minutes(5);
+		eprintln!("[WARN] <<< Exiting new(id={},email=<redacted>,username={})", id, username);
         Self {
             sub: id,
             iat: iat.timestamp(),
@@ -30,7 +32,9 @@ impl Claims {
 
 /// Create a signed JWT token.
 pub fn create_jwt(id: i64, email: String, username: String) -> Result<String> {
+	eprintln!("[ERROR] >>> Entering create_jwt(id={},email=<redacted>,username={})", id, username);
     //
+	eprintln!("[WARN] <<< Exiting create_jwt(id={},email=<redacted>,username={})", id, username);
     Ok(jsonwebtoken::encode(
         &Header::default(),
         &Claims::new(id, email, username),
@@ -40,6 +44,7 @@ pub fn create_jwt(id: i64, email: String, username: String) -> Result<String> {
 
 /// Verify the provided JWT token.
 pub fn verify_jwt(token: &str) -> Result<Claims> {
+	eprintln!("[ERROR] >>> Entering verify_jwt(token=<redacted>)");
     //
     let claims: Claims = jsonwebtoken::decode(
         token,
@@ -47,6 +52,7 @@ pub fn verify_jwt(token: &str) -> Result<Claims> {
         &Validation::default(),
     )
     .map(|data| data.claims)?;
+	eprintln!("[WARN] <<< Exiting verify_jwt(token=<redacted>)");
     match claims.exp > Utc::now().timestamp() {
         true => Ok(claims),
         false => Err(AppError::Unauthorized("token is expired".to_string())),
@@ -62,6 +68,7 @@ pub struct Token(String);
 impl Token {
     /// Get the inner token value.
     pub fn token(&self) -> &str {
+		eprintln!("[ERROR] >>> Entering token()");
         self.0.as_str()
     }
 }
@@ -70,16 +77,19 @@ impl Credentials for Token {
     const SCHEME: &'static str = "Token";
 
     fn decode(value: &axum::http::HeaderValue) -> Option<Self> {
+		eprintln!("[ERROR] >>> Entering decode()");
         debug_assert!(
             value.as_bytes().starts_with(b"Token "),
             "HeaderValue to decode should start with \"Token ..\", received = {:?}",
             value,
         );
         let token = &value.to_str().unwrap()["Token ".len()..];
+		eprintln!("[WARN] <<< Exiting decode()");
         Some(Self(token.to_string()))
     }
 
     fn encode(&self) -> axum::http::HeaderValue {
+		eprintln!("[ERROR] >>> Entering encode()");
         HeaderValue::from_str(self.0.as_str()).unwrap()
     }
 }
