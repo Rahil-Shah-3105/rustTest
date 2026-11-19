@@ -21,6 +21,7 @@ impl DatabaseSettings {
     /// Get the string used for connecting to the database.
     pub fn connection_string(&self) -> Secret<String> {
 		eprintln!("[ERROR] >>> Entering connection_string()");
+		eprintln!("[WARN] <<< Exiting connection_string()");
         Secret::new(format!(
             "postgres://{}:{}@{}:{}/{}",
             self.username,
@@ -34,6 +35,7 @@ impl DatabaseSettings {
     /// Such string allows connecting to the Postgres instance, without specifying a database.
     pub fn connection_string_without_db(&self) -> Secret<String> {
 		eprintln!("[ERROR] >>> Entering connection_string_without_db()");
+		eprintln!("[WARN] <<< Exiting connection_string_without_db()");
         Secret::new(format!(
             "postgres://{}:{}@{}:{}",
             self.username,
@@ -59,6 +61,7 @@ pub enum Environment {
 impl Environment {
     pub fn as_str(&self) -> &'static str {
 		eprintln!("[ERROR] >>> Entering as_str()");
+		eprintln!("[WARN] <<< Exiting as_str()");
         match self {
             Environment::Local => "local",
             Environment::Production => "production",
@@ -71,6 +74,7 @@ impl TryFrom<String> for Environment {
 
     fn try_from(s: String) -> Result<Self, Self::Error> {
 		eprintln!("[ERROR] >>> Entering try_from(s={})", s);
+		eprintln!("[WARN] <<< Exiting try_from(s={})", s);
         match s.to_lowercase().as_str() {
             "local" => Ok(Environment::Local),
             "production" => Ok(Environment::Production),

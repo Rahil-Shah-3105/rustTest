@@ -12,6 +12,7 @@ pub fn SignUpPage(cx: Scope) -> Element {
     let email = use_state(&cx, String::new);
     let password = use_state(&cx, String::new);
 
+	log::warn!("<<< Exiting SignUpPage()");
     cx.render(rsx! {
         div {
             class: "auth-page",

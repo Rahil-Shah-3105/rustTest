@@ -57,6 +57,7 @@ impl Article {
         author_id: i64,
     ) -> Self {
 		eprintln!("[ERROR] >>> Entering new_basic(slug={},title={},description={},body={},tag_list={:?},author_id={})", slug, title, description, body, tag_list, author_id);
+		eprintln!("[WARN] <<< Exiting new_basic(slug={},title={},description={},body={},tag_list={:?},author_id={})", slug, title, description, body, tag_list, author_id);
         Self {
             id: 0,
             slug,

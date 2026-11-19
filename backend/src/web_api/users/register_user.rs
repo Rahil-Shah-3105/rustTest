@@ -21,6 +21,7 @@ impl From<RegisterUserInput> for User {
     //
     fn from(val: RegisterUserInput) -> Self {
 		log::error!(">>> Entering from(val={:?})", val);
+		log::warn!("<<< Exiting from(val={:?})", val);
         Self {
             id: 0, // not relevant
             email: val.user.email,

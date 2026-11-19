@@ -11,6 +11,7 @@ pub fn ArticleAdd(cx: Scope) -> Element {
     let summary = use_state(&cx, String::new);
     let content = use_state(&cx, String::new);
     let tags = use_state(&cx, String::new);
+	log::warn!("<<< Exiting ArticleAdd()");
     cx.render(rsx! {
         div {
             class: "editor-page",

@@ -12,6 +12,7 @@ where
     E: std::error::Error,
 {
 	eprintln!("[ERROR] >>> Entering respond_internal_server_error()");
+	eprintln!("[WARN] <<< Exiting respond_internal_server_error()");
     (
         StatusCode::INTERNAL_SERVER_ERROR,
         Json(json!({
@@ -26,6 +27,7 @@ where
     E: std::error::Error,
 {
 	eprintln!("[ERROR] >>> Entering respond_bad_request()");
+	eprintln!("[WARN] <<< Exiting respond_bad_request()");
     (
         StatusCode::BAD_REQUEST,
         Json(json!({
@@ -40,6 +42,7 @@ where
     E: std::error::Error,
 {
 	eprintln!("[ERROR] >>> Entering respond_unauthorized()");
+	eprintln!("[WARN] <<< Exiting respond_unauthorized()");
     (
         StatusCode::UNAUTHORIZED,
         Json(json!({
@@ -54,6 +57,7 @@ where
     E: std::error::Error,
 {
 	eprintln!("[ERROR] >>> Entering respond_not_found()");
+	eprintln!("[WARN] <<< Exiting respond_not_found()");
     (
         StatusCode::NOT_FOUND,
         Json(json!({

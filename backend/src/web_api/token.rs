@@ -69,6 +69,7 @@ impl Token {
     /// Get the inner token value.
     pub fn token(&self) -> &str {
 		eprintln!("[ERROR] >>> Entering token()");
+		eprintln!("[WARN] <<< Exiting token()");
         self.0.as_str()
     }
 }
@@ -90,6 +91,7 @@ impl Credentials for Token {
 
     fn encode(&self) -> axum::http::HeaderValue {
 		eprintln!("[ERROR] >>> Entering encode()");
+		eprintln!("[WARN] <<< Exiting encode()");
         HeaderValue::from_str(self.0.as_str()).unwrap()
     }
 }
