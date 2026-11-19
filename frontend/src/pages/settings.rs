@@ -13,6 +13,7 @@ pub fn SettingsPage(cx: Scope) -> Element {
     let email = use_state(&cx, String::new);
     let password = use_state(&cx, String::new);
 
+	log::warn!("<<< Exiting SettingsPage()");
     cx.render(rsx! {
         div {
             class: "settings-page",

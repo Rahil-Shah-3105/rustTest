@@ -83,6 +83,7 @@ where
     E: Error + 'static,
 {
 	eprintln!("[ERROR] >>> Entering find_serde_json_error_source()");
+	eprintln!("[WARN] <<< Exiting find_serde_json_error_source()");
     find_error_source::<serde_json::Error>(err).map(|serde_json_err| serde_json_err.to_string())
 }
 

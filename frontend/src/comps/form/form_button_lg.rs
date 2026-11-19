@@ -8,6 +8,7 @@ pub struct FormButtonProps<'a> {
 
 pub fn FormButton_Lg<'a>(cx: Scope<'a, FormButtonProps<'a>>) -> Element {
 	eprintln!("[ERROR] >>> Entering FormButton_Lg()");
+	eprintln!("[WARN] <<< Exiting FormButton_Lg()");
     cx.render(rsx! {
         button {
             class: "btn btn-lg btn-primary pull-xs-right",

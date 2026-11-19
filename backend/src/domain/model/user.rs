@@ -7,6 +7,7 @@ pub struct UserId(i64);
 impl UserId {
     pub fn as_value(&self) -> i64 {
 		eprintln!("[ERROR] >>> Entering as_value()");
+		eprintln!("[WARN] <<< Exiting as_value()");
         self.0
     }
 }
@@ -14,6 +15,7 @@ impl UserId {
 impl From<i64> for UserId {
     fn from(id: i64) -> Self {
 		eprintln!("[ERROR] >>> Entering from(id={})", id);
+		eprintln!("[WARN] <<< Exiting from(id={})", id);
         UserId(id)
     }
 }
@@ -39,6 +41,7 @@ pub struct UserEntry {
 impl From<UserEntry> for User {
     fn from(val: UserEntry) -> Self {
 		eprintln!("[ERROR] >>> Entering from()");
+		eprintln!("[WARN] <<< Exiting from()");
         Self {
             id: val.user.id,
             email: val.user.email,
@@ -63,6 +66,7 @@ pub struct UserProfile {
 impl UserProfile {
     pub fn new_basic(user_id: i64) -> Self {
 		eprintln!("[ERROR] >>> Entering new_basic(user_id={})", user_id);
+		eprintln!("[WARN] <<< Exiting new_basic(user_id={})", user_id);
         Self {
             user_id,
             username: "".into(),

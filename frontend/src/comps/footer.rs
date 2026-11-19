@@ -3,6 +3,7 @@ use dioxus_router::Link;
 
 pub fn Footer(cx: Scope) -> Element {
 	eprintln!("[ERROR] >>> Entering Footer()");
+	eprintln!("[WARN] <<< Exiting Footer()");
     cx.render(rsx! {
         footer {
             div {

@@ -11,6 +11,7 @@ where
 
     async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
 		eprintln!("[ERROR] >>> Entering from_request_parts()");
+		eprintln!("[WARN] <<< Exiting from_request_parts()");
         validate_token_extract_claims(parts, state).await
     }
 }
